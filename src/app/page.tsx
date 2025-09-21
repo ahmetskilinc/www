@@ -40,18 +40,20 @@ export default function Home() {
                   className="text-zinc-900 dark:text-zinc-100 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                   onClick={() => track("zero_email_clicked")}
                 >
-                  Zero
+                  Mail0
                 </a>{" "}
-                and{" "}
-                <a
-                  href="https://oss.now"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-zinc-900 dark:text-zinc-100 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                  onClick={() => track("oss.now_clicked")}
-                >
-                  oss.now
-                </a>
+                <span className="line-through">
+                  and{" "}
+                  <a
+                    href="https://oss.now"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-zinc-900 dark:text-zinc-100 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                    onClick={() => track("oss.now_clicked")}
+                  >
+                    oss.now
+                  </a>
+                </span>
                 .
               </p>
             </AnimateIn>
