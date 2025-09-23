@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { AnimateIn } from "@/components/animations/AnimateIn";
 import Bun from "@/components/icons/Bun";
 import DrizzleORM from "@/components/icons/Drizzle";
+import Github from "@/components/icons/Github";
 import Nextjs from "@/components/icons/Next";
 import Nodejs from "@/components/icons/Nodejs";
 import Postgres from "@/components/icons/Postgres";
@@ -101,6 +102,17 @@ export default function Home() {
                 )}
               >
                 Tools
+              </TabsTrigger>
+              <TabsTrigger
+                value="sponsors"
+                className={cn(
+                  "!bg-transparent !border-none !shadow-none",
+                  "!font-light data-[state=active]:!font-bold transition-all duration-300 ease-out",
+                  "!text-neutral-400 dark:!text-neutral-400",
+                  "data-[state=active]:!text-neutral-800 dark:data-[state=active]:!text-neutral-100"
+                )}
+              >
+                Sponsors
               </TabsTrigger>
             </TabsList>
           </AnimateIn>
@@ -227,6 +239,124 @@ export default function Home() {
                       </div>
                     </AnimateIn>
                   ))}
+                </div>
+              </section>
+            </AnimateIn>
+          </TabsContent>
+          <TabsContent value="sponsors">
+            <AnimateIn variant="fadeUp" delay={0}>
+              <section className="mb-12">
+                <div className="space-y-8">
+                  {/* GitHub Sponsors Section */}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Github className="h-5 w-5" />
+                      <h2 className="text-md font-medium">GitHub Sponsors</h2>
+                    </div>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
+                      Thank you to all my sponsors for supporting my open-source work! 
+                      <a
+                        href="https://github.com/sponsors/ahmetskilinc"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-1 text-zinc-900 dark:text-zinc-100 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors underline"
+                        onClick={() => track("github_sponsors_clicked")}
+                      >
+                        Become a sponsor
+                      </a>
+                    </p>
+                  </div>
+
+                  {/* Gold Sponsors */}
+                  {sponsors.gold.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium mb-4 text-yellow-600 dark:text-yellow-500">🏆 Gold Sponsors ($100+/month)</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {sponsors.gold.map((sponsor, index) => (
+                          <AnimateIn key={index} variant="fadeLeft" delay={0.1 + index * 0.1}>
+                            <a
+                              href={sponsor.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block group p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300 hover:translate-x-1"
+                              onClick={() => track(`sponsor_${sponsor.name}_clicked`)}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h4 className="font-medium text-sm">{sponsor.name}</h4>
+                                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{sponsor.description}</p>
+                                </div>
+                                <ExternalLink className="w-4 h-4 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors" />
+                              </div>
+                            </a>
+                          </AnimateIn>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Silver Sponsors */}
+                  {sponsors.silver.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium mb-4 text-zinc-600 dark:text-zinc-400">🥈 Silver Sponsors ($50+/month)</h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {sponsors.silver.map((sponsor, index) => (
+                          <AnimateIn key={index} variant="fadeLeft" delay={0.1 + index * 0.05}>
+                            <a
+                              href={sponsor.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block group p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300 hover:translate-x-1"
+                              onClick={() => track(`sponsor_${sponsor.name}_clicked`)}
+                            >
+                              <h4 className="font-medium text-sm flex items-center justify-between">
+                                {sponsor.name}
+                                <ExternalLink className="w-3 h-3 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors" />
+                              </h4>
+                            </a>
+                          </AnimateIn>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bronze Sponsors */}
+                  {sponsors.bronze.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium mb-4 text-orange-700 dark:text-orange-600">🥉 Bronze Sponsors ($10+/month)</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {sponsors.bronze.map((sponsor, index) => (
+                          <AnimateIn key={index} variant="scale" delay={0.1 + index * 0.03}>
+                            <a
+                              href={sponsor.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                              onClick={() => track(`sponsor_${sponsor.name}_clicked`)}
+                            >
+                              {sponsor.name}
+                            </a>
+                          </AnimateIn>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Past Sponsors */}
+                  {sponsors.past.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium mb-4 text-zinc-500 dark:text-zinc-500">Past Sponsors</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {sponsors.past.map((sponsor, index) => (
+                          <AnimateIn key={index} variant="scale" delay={0.1 + index * 0.03}>
+                            <span className="inline-flex items-center px-2 py-1 text-xs text-zinc-400 dark:text-zinc-500">
+                              {sponsor.name}
+                            </span>
+                          </AnimateIn>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </section>
             </AnimateIn>
@@ -422,6 +552,67 @@ const tools = {
     {
       Logo: (props: React.SVGProps<SVGSVGElement>) => <Postgres {...props} />,
       title: "PostgreSQL",
+    },
+  ],
+};
+
+const sponsors = {
+  gold: [
+    // Example gold sponsors - replace with actual sponsors
+    {
+      name: "Acme Corp",
+      description: "Building the future of web development",
+      link: "https://github.com/acmecorp",
+    },
+    {
+      name: "TechStart Inc",
+      description: "Innovation in cloud computing",
+      link: "https://github.com/techstart",
+    },
+  ],
+  silver: [
+    // Example silver sponsors - replace with actual sponsors
+    {
+      name: "DevTools Pro",
+      link: "https://github.com/devtoolspro",
+    },
+    {
+      name: "CodeCraft",
+      link: "https://github.com/codecraft",
+    },
+    {
+      name: "WebMasters",
+      link: "https://github.com/webmasters",
+    },
+  ],
+  bronze: [
+    // Example bronze sponsors - replace with actual sponsors
+    {
+      name: "John Doe",
+      link: "https://github.com/johndoe",
+    },
+    {
+      name: "Jane Smith",
+      link: "https://github.com/janesmith",
+    },
+    {
+      name: "Dev Community",
+      link: "https://github.com/devcommunity",
+    },
+    {
+      name: "Open Source Fan",
+      link: "https://github.com/opensourcefan",
+    },
+  ],
+  past: [
+    // Example past sponsors - replace with actual sponsors
+    {
+      name: "Previous Sponsor",
+      link: "https://github.com/previoussponsor",
+    },
+    {
+      name: "Old Friend",
+      link: "https://github.com/oldfriend",
     },
   ],
 };
