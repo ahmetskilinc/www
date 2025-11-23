@@ -3,16 +3,16 @@
 import SocialMedia from "@/components/SocialMedia";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AnimateIn } from "@/components/animations/AnimateIn";
-import Bun from "@/components/icons/Bun";
-import DrizzleORM from "@/components/icons/Drizzle";
-import Nextjs from "@/components/icons/Next";
-import Nodejs from "@/components/icons/Nodejs";
-import Postgres from "@/components/icons/Postgres";
-import ReactIcon from "@/components/icons/React";
-import TailwindCSS from "@/components/icons/Tailwind";
-import Trpc from "@/components/icons/Trpc";
-import TypeScript from "@/components/icons/Typescript";
-import Vercel from "@/components/icons/Vercel";
+// import Bun from "@/components/icons/Bun";
+// import DrizzleORM from "@/components/icons/Drizzle";
+// import Nextjs from "@/components/icons/Next";
+// import Nodejs from "@/components/icons/Nodejs";
+// import Postgres from "@/components/icons/Postgres";
+// import ReactIcon from "@/components/icons/React";
+// import TailwindCSS from "@/components/icons/Tailwind";
+// import Trpc from "@/components/icons/Trpc";
+// import TypeScript from "@/components/icons/Typescript";
+// import Vercel from "@/components/icons/Vercel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { track } from "@vercel/analytics";
@@ -32,28 +32,16 @@ export default function Home() {
             </AnimateIn>
             <AnimateIn variant="fadeUp" delay={0.4}>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mb-8">
-                Software Engineer from London. Contact me below. Currently building{" "}
+                Software Engineer from London. Currently working as a Senior Frontend Engineer at{" "}
                 <a
-                  href="https://0.email"
+                  href="https://incard.co/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-zinc-900 dark:text-zinc-100 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                  onClick={() => track("zero_email_clicked")}
+                  onClick={() => track("incard_clicked")}
                 >
-                  Mail0
-                </a>{" "}
-                <span className="line-through">
-                  and{" "}
-                  <a
-                    href="https://oss.now"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-zinc-900 dark:text-zinc-100 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                    onClick={() => track("oss.now_clicked")}
-                  >
-                    oss.now
-                  </a>
-                </span>
+                  Incard
+                </a>
                 .
               </p>
             </AnimateIn>
@@ -66,20 +54,9 @@ export default function Home() {
           </section>
         </AnimateIn>
 
-        <Tabs defaultValue="projects">
+        <Tabs defaultValue="experience">
           <AnimateIn variant="fadeUp" delay={0.2}>
             <TabsList className="mb-4 border-none bg-transparent p-0 -ml-[8px]">
-              <TabsTrigger
-                value="projects"
-                className={cn(
-                  "!bg-transparent !border-none !shadow-none",
-                  "!font-light data-[state=active]:!font-bold transition-all duration-300 ease-out",
-                  "!text-neutral-400 dark:!text-neutral-400",
-                  "data-[state=active]:!text-neutral-800 dark:data-[state=active]:!text-neutral-100"
-                )}
-              >
-                Projects
-              </TabsTrigger>
               <TabsTrigger
                 value="experience"
                 className={cn(
@@ -92,6 +69,17 @@ export default function Home() {
                 Experience
               </TabsTrigger>
               <TabsTrigger
+                value="projects"
+                className={cn(
+                  "!bg-transparent !border-none !shadow-none",
+                  "!font-light data-[state=active]:!font-bold transition-all duration-300 ease-out",
+                  "!text-neutral-400 dark:!text-neutral-400",
+                  "data-[state=active]:!text-neutral-800 dark:data-[state=active]:!text-neutral-100"
+                )}
+              >
+                Projects
+              </TabsTrigger>
+              {/* <TabsTrigger
                 value="tools"
                 className={cn(
                   "!bg-transparent !border-none !shadow-none",
@@ -101,10 +89,44 @@ export default function Home() {
                 )}
               >
                 Tools
-              </TabsTrigger>
+              </TabsTrigger> */}
             </TabsList>
           </AnimateIn>
 
+          <TabsContent value="experience">
+            <AnimateIn variant="fadeUp" delay={0}>
+              <section className="mb-12">
+                <div className="space-y-8">
+                  <ul className="space-y-8">
+                    {experience.map((job, index) => {
+                      const delay = 0.1 + index * 0.1;
+                      return (
+                        <AnimateIn key={index} variant="fadeLeft" delay={delay}>
+                          <li className="group hover:translate-x-1 transition-all duration-300 ease-out">
+                            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1">
+                              <h3 className="text-md font-medium">
+                                {job.role} {job.role.toLowerCase().includes("freelance") ? "" : "at"} {job.company}
+                              </h3>
+                              <span className="text-xs text-zinc-400 dark:text-zinc-500">{job.period}</span>
+                            </div>
+                            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">{job.description}</p>
+                            <div className="flex flex-wrap gap-2">
+                              {job.technologies.map((tech, techIndex) => (
+                                <span key={techIndex} className="text-xs text-zinc-400 dark:text-zinc-500">
+                                  {tech}
+                                  {techIndex < job.technologies.length - 1 ? " /" : ""}
+                                </span>
+                              ))}
+                            </div>
+                          </li>
+                        </AnimateIn>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </section>
+            </AnimateIn>
+          </TabsContent>
           <TabsContent value="projects">
             <AnimateIn variant="fadeUp" delay={0}>
               <section className="mb-12">
@@ -160,42 +182,7 @@ export default function Home() {
               </section>
             </AnimateIn>
           </TabsContent>
-
-          <TabsContent value="experience">
-            <AnimateIn variant="fadeUp" delay={0}>
-              <section className="mb-12">
-                <div className="space-y-8">
-                  <ul className="space-y-8">
-                    {experience.map((job, index) => {
-                      const delay = 0.1 + index * 0.1;
-                      return (
-                        <AnimateIn key={index} variant="fadeLeft" delay={delay}>
-                          <li className="group hover:translate-x-1 transition-all duration-300 ease-out">
-                            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1">
-                              <h3 className="text-md font-medium">
-                                {job.role} {job.role.toLowerCase().includes("freelance") ? "" : "at"} {job.company}
-                              </h3>
-                              <span className="text-xs text-zinc-400 dark:text-zinc-500">{job.period}</span>
-                            </div>
-                            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">{job.description}</p>
-                            <div className="flex flex-wrap gap-2">
-                              {job.technologies.map((tech, techIndex) => (
-                                <span key={techIndex} className="text-xs text-zinc-400 dark:text-zinc-500">
-                                  {tech}
-                                  {techIndex < job.technologies.length - 1 ? " /" : ""}
-                                </span>
-                              ))}
-                            </div>
-                          </li>
-                        </AnimateIn>
-                      );
-                    })}
-                  </ul>
-                </div>
-              </section>
-            </AnimateIn>
-          </TabsContent>
-          <TabsContent value="tools">
+          {/* <TabsContent value="tools">
             <AnimateIn variant="fadeUp" delay={0}>
               <h2 className="text-md font-medium mb-4">Frontend</h2>
               <section className="mb-12">
@@ -230,7 +217,7 @@ export default function Home() {
                 </div>
               </section>
             </AnimateIn>
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
       </div>
 
@@ -246,17 +233,17 @@ export default function Home() {
 
 const projects = [
   {
-    title: "oss.now",
+    title: "oss.now (aquired)",
     description: "A place to share your open source projects and find new ones.",
     link: "https://oss.now",
-    github: "https://github.com/ahmetskilinc/ossdotnow",
+    github: "https://github.com/collabute/ossdotnow",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn UI", "Postgres", "DrizzleORM", "Bun", "tRPC", "Vercel"],
   },
   {
     title: "UI Registry",
     description: "A simple UI registry for components and blocks using the shadcn api.",
-    link: "https://l.ahmet.studio/ui",
-    github: "https://l.ahmet.studio/gh",
+    link: "https://ahmet.studio/ui",
+    github: "https://github.com/ahmetskilinc/ui",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn UI"],
   },
   {
@@ -302,9 +289,16 @@ const projects = [
 
 const experience = [
   {
+    role: "Senior Frontend Engineer",
+    company: "Incard Ltd.",
+    period: "Nov 2025 - Present",
+    description: "Senior frontend engineer responsible for building the new version of the Incard website.",
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "SWR", "Vercel"],
+  },
+  {
     role: "Software Engineer",
     company: "Zero Email Inc. (US, remote)",
-    period: "Feb 2025 - Present",
+    period: "Feb 2025 - Oct 2025",
     description:
       "Software engineer responsible for core features and performance optimisations for an innovative AI-powered email client, focusing on intelligent email processing and real-time collaboration.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Postgres", "Google APIs"],
@@ -339,89 +333,89 @@ const experience = [
   // },
 ];
 
-const tools = {
-  frontend: [
-    {
-      Logo: (props: React.SVGProps<SVGSVGElement>) => <ReactIcon {...props} />,
-      title: "React",
-    },
-    {
-      Logo: (props: React.SVGProps<SVGSVGElement>) => <Nextjs {...props} />,
-      title: "NextJS",
-    },
-    // {
-    //   Logo: (props: React.SVGProps<SVGSVGElement>) => <ReactRouter {...props} />,
-    //   title: "React Router",
-    // },
-    // {
-    //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Vue {...props} />,
-    //   title: "VueJS",
-    // },
-    // {
-    //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Nuxt {...props} />,
-    //   title: "NuxtJS",
-    // },
-    // {
-    //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Html {...props} />,
-    //   title: "HTML",
-    // },
-    // {
-    //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Css {...props} />,
-    //   title: "CSS",
-    // },
-    // {
-    //   Logo: (props: React.SVGProps<SVGSVGElement>) => <JavaScript {...props} />,
-    //   title: "Javascript",
-    // },
-    {
-      Logo: (props: React.SVGProps<SVGSVGElement>) => <TypeScript {...props} />,
-      title: "Typescript",
-    },
-    // {
-    //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Sass {...props} />,
-    //   title: "Sass",
-    // },
-    {
-      Logo: (props: React.SVGProps<SVGSVGElement>) => <TailwindCSS {...props} />,
-      title: "TailwindCSS",
-    },
-  ],
-  backend_and_infrastructure: [
-    {
-      Logo: (props: React.SVGProps<SVGSVGElement>) => <Trpc {...props} />,
-      title: "TRPC",
-    },
-    // {
-    //   Logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg",
-    //   title: "Google Cloud",
-    // },
-    // {
-    //   Logo: (props: React.SVGProps<SVGSVGElement>) => <AmazonWebServices {...props} />,
-    //   title: "AWS",
-    // },
-    // {
-    //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Cloudflare {...props} />,
-    //   title: "Cloudflare",
-    // },
-    {
-      Logo: (props: React.SVGProps<SVGSVGElement>) => <Vercel className="fill-black dark:fill-white" {...props} />,
-      title: "Vercel",
-    },
-    {
-      Logo: (props: React.SVGProps<SVGSVGElement>) => <DrizzleORM {...props} />,
-      title: "DrizzleORM",
-    },
-    {
-      Logo: (props: React.SVGProps<SVGSVGElement>) => <Bun {...props} />,
-      title: "Bun",
-    },
-    {
-      Logo: (props: React.SVGProps<SVGSVGElement>) => <Nodejs {...props} />,
-      title: "NodeJS",
-    },
-    {
-      Logo: (props: React.SVGProps<SVGSVGElement>) => <Postgres {...props} />,
-      title: "PostgreSQL",
-    },
-  ],
-};
+// const tools = {
+//   frontend: [
+//     {
+//       Logo: (props: React.SVGProps<SVGSVGElement>) => <ReactIcon {...props} />,
+//       title: "React",
+//     },
+//     {
+//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Nextjs {...props} />,
+//       title: "NextJS",
+//     },
+//     // {
+//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <ReactRouter {...props} />,
+//     //   title: "React Router",
+//     // },
+//     // {
+//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Vue {...props} />,
+//     //   title: "VueJS",
+//     // },
+//     // {
+//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Nuxt {...props} />,
+//     //   title: "NuxtJS",
+//     // },
+//     // {
+//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Html {...props} />,
+//     //   title: "HTML",
+//     // },
+//     // {
+//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Css {...props} />,
+//     //   title: "CSS",
+//     // },
+//     // {
+//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <JavaScript {...props} />,
+//     //   title: "Javascript",
+//     // },
+//     {
+//       Logo: (props: React.SVGProps<SVGSVGElement>) => <TypeScript {...props} />,
+//       title: "Typescript",
+//     },
+//     // {
+//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Sass {...props} />,
+//     //   title: "Sass",
+//     // },
+//     {
+//       Logo: (props: React.SVGProps<SVGSVGElement>) => <TailwindCSS {...props} />,
+//       title: "TailwindCSS",
+//     },
+//   ],
+//   backend_and_infrastructure: [
+//     {
+//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Trpc {...props} />,
+//       title: "TRPC",
+//     },
+//     // {
+//     //   Logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg",
+//     //   title: "Google Cloud",
+//     // },
+//     // {
+//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <AmazonWebServices {...props} />,
+//     //   title: "AWS",
+//     // },
+//     // {
+//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Cloudflare {...props} />,
+//     //   title: "Cloudflare",
+//     // },
+//     {
+//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Vercel className="fill-black dark:fill-white" {...props} />,
+//       title: "Vercel",
+//     },
+//     {
+//       Logo: (props: React.SVGProps<SVGSVGElement>) => <DrizzleORM {...props} />,
+//       title: "DrizzleORM",
+//     },
+//     {
+//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Bun {...props} />,
+//       title: "Bun",
+//     },
+//     {
+//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Nodejs {...props} />,
+//       title: "NodeJS",
+//     },
+//     {
+//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Postgres {...props} />,
+//       title: "PostgreSQL",
+//     },
+//   ],
+// };

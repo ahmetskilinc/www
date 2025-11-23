@@ -99,11 +99,6 @@ const projectLinks: Link[] = [
     url: "https://oss.now",
   },
   {
-    name: "Zero/0.email",
-    track: "zero_email_clicked",
-    url: "https://0.email",
-  },
-  {
     name: "ui.ahmet.studio",
     url: "https://ui.ahmet.studio",
   },

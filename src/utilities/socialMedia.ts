@@ -1,8 +1,8 @@
 const socialMedia = [
-  {
-    name: "calcom",
-    link: "https://cal.link/ahmet",
-  },
+  // {
+  //   name: "calcom",
+  //   link: "https://cal.link/ahmet",
+  // },
   {
     name: "github",
     link: "https://dub.sh/ahmetgh",
@@ -20,10 +20,10 @@ const socialMedia = [
     name: "email",
     link: "mailto:ahmetskilinc@icloud.com",
   },
-  // {
-  //   name: "instagram",
-  //   link: "https://dub.sh/ahmetig",
-  // },
+  {
+    name: "instagram",
+    link: "https://dub.sh/ahmetig",
+  },
 ];
 
 export default socialMedia;
