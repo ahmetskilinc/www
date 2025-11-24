@@ -1,9 +1,7 @@
-"use client";
-
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ArrowUpRight } from "lucide-react";
-import { track } from "@vercel/analytics";
-import Link from "next/link";
+import FooterWrapper from "@/components/FooterWrapper";
+import CustomLink from "@/components/CustomLink";
 
 export default function Links() {
   return (
@@ -18,58 +16,55 @@ export default function Links() {
 
         <div className="flex flex-col gap-2 mb-8">
           <div className="group">
-            <Link
+            <CustomLink
               href="https://cal.link/ahmet"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between text-lg hover:translate-x-1 transition-all duration-300 ease-out"
-              onClick={() => track(`cal_link_clicked`)}
+              track="cal_link_clicked"
             >
               <span>Book a call</span>
               <ArrowUpRight />
-            </Link>
+            </CustomLink>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-8">
           {projectLinks.map((link) => (
             <div key={link.name} className="group">
-              <Link
+              <CustomLink
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between text-lg hover:translate-x-1 transition-all duration-300 ease-out"
-                onClick={() => track(link.track || `${link.name.toLowerCase()}_link_clicked`)}
+                track={link.track || `${link.name.toLowerCase()}_link_clicked`}
               >
                 <span>{link.name}</span>
                 <ArrowUpRight />
-              </Link>
+              </CustomLink>
             </div>
           ))}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mb-8">
           {socialLinks.map((link) => (
             <div key={link.name} className="group">
-              <Link
+              <CustomLink
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between text-lg hover:translate-x-1 transition-all duration-300 ease-out"
-                onClick={() => track(link.track || `${link.name.toLowerCase()}_link_clicked`)}
+                track={link.track || `${link.name.toLowerCase()}_link_clicked`}
               >
                 <span>{link.name}</span>
                 <ArrowUpRight />
-              </Link>
+              </CustomLink>
             </div>
           ))}
         </div>
       </div>
 
-      <footer className="pt-4 text-xs text-zinc-400 dark:text-zinc-500 flex justify-between items-center">
-        <div>ahmet.studio</div>
-        <div>Built with Next.js</div>
-      </footer>
+      <FooterWrapper />
     </main>
   );
 }
@@ -82,7 +77,7 @@ type Link = {
 
 const projectLinks: Link[] = [
   {
-    name: "oss.now",
+    name: "oss.now (acquired)",
     url: "https://oss.now",
   },
   {

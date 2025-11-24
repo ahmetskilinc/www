@@ -1,7 +1,6 @@
-"use client";
-
 import SocialMedia from "@/components/SocialMedia";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import FooterWrapper from "@/components/FooterWrapper";
 // import Bun from "@/components/icons/Bun";
 // import DrizzleORM from "@/components/icons/Drizzle";
 // import Nextjs from "@/components/icons/Next";
@@ -16,6 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { track } from "@vercel/analytics";
 import { ExternalLink } from "lucide-react";
+import Link from "next/link";
+import CustomLink from "@/components/CustomLink";
 
 export default function Home() {
   return (
@@ -28,15 +29,15 @@ export default function Home() {
           </h1>
           <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mb-8">
             Software Engineer from London. Currently working as a Senior Frontend Engineer at{" "}
-            <a
+            <CustomLink
               href="https://incard.co/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-900 dark:text-zinc-100 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-              onClick={() => track("incard_clicked")}
+              track="incard_clicked"
             >
               Incard
-            </a>
+            </CustomLink>
             .
           </p>
 
@@ -89,7 +90,7 @@ export default function Home() {
                   {experience.map((job, index) => {
                     const delay = 0.1 + index * 0.1;
                     return (
-                      <li className="group hover:translate-x-1 transition-all duration-300 ease-out">
+                      <li key={job.company} className="group hover:translate-x-1 transition-all duration-300 ease-out">
                         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1">
                           <h3 className="text-md font-medium">
                             {job.role} {job.role.toLowerCase().includes("freelance") ? "" : "at"} {job.company}
@@ -119,31 +120,31 @@ export default function Home() {
                   {projects.map((project, index) => {
                     const delay = 0.1 + index * 0.1;
                     return (
-                      <li className="group hover:translate-x-1 transition-all duration-300 ease-out">
+                      <li key={project.title} className="group hover:translate-x-1 transition-all duration-300 ease-out">
                         <div className="flex items-baseline justify-between mb-1">
                           <h3 className="text-md font-medium">{project.title}</h3>
                           <div className="flex flex-row gap-2">
                             {project.github ? (
-                              <a
+                              <CustomLink
                                 href={project.github}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                                onClick={() => track(`${project.title}_github_clicked`)}
+                                track={`${project.title}_github_clicked`}
                               >
                                 GitHub <ExternalLink className="w-3 h-3" />
-                              </a>
+                              </CustomLink>
                             ) : null}
                             {project.link ? (
-                              <a
+                              <CustomLink
                                 href={project.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                                onClick={() => track(`${project.title}_clicked`)}
+                                track={`${project.title}_clicked`}
                               >
                                 View <ExternalLink className="w-3 h-3" />
-                              </a>
+                              </CustomLink>
                             ) : null}
                           </div>
                         </div>
@@ -194,10 +195,7 @@ export default function Home() {
         </Tabs>
       </div>
 
-      <footer className="pt-4 text-xs text-zinc-400 dark:text-zinc-500 flex justify-between items-center">
-        <div>ahmet.studio</div>
-        <div>Built with Next.js</div>
-      </footer>
+      <FooterWrapper />
     </main>
   );
 }

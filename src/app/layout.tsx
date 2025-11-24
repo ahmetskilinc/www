@@ -1,7 +1,6 @@
 import "./globals.css";
 import { getUrl } from "@/utilities/getUrl";
 import { Geist_Mono, Geist } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { Metadata, Viewport } from "next";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/react";
@@ -27,7 +26,6 @@ const RootLayout: React.FC<Props> = ({ children }) => {
           {children}
         </ThemeProvider>
       </body>
-      <GoogleAnalytics gaId="G-M80GLPRQFQ" />
       <Analytics />
     </html>
   );
