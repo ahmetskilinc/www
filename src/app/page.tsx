@@ -54,7 +54,7 @@ export default function Home() {
                 "!bg-transparent !border-none !shadow-none",
                 "!font-light data-[state=active]:!font-bold transition-all duration-300 ease-out",
                 "!text-neutral-400 dark:!text-neutral-400",
-                "data-[state=active]:!text-neutral-800 dark:data-[state=active]:!text-neutral-100"
+                "data-[state=active]:!text-neutral-800 dark:data-[state=active]:!text-neutral-100",
               )}
             >
               Experience
@@ -65,7 +65,7 @@ export default function Home() {
                 "!bg-transparent !border-none !shadow-none",
                 "!font-light data-[state=active]:!font-bold transition-all duration-300 ease-out",
                 "!text-neutral-400 dark:!text-neutral-400",
-                "data-[state=active]:!text-neutral-800 dark:data-[state=active]:!text-neutral-100"
+                "data-[state=active]:!text-neutral-800 dark:data-[state=active]:!text-neutral-100",
               )}
             >
               Projects
@@ -202,7 +202,33 @@ export default function Home() {
 
 const projects = [
   {
-    title: "oss.now (aquired)",
+    title: "email renderer",
+    description: "A tool to test html and React Email emails in your browser.",
+    link: "https://email-renderer-web.vercel.app",
+    github: "https://github.com/ahmetskilinc/email-renderer",
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn UI", "React Email", "Vercel", "Resend"],
+  },
+  {
+    title: "gitbruv",
+    description: "A Github alternative.",
+    link: "https://gitbruv.dev",
+    github: "https://gitbruv.dev/bruv/gitbruv",
+    technologies: [
+      "Tanstack Start",
+      "Tanstack Query",
+      "Expo",
+      "React Native",
+      "TypeScript",
+      "Rust",
+      "Tailwind CSS",
+      "Shadcn UI",
+      "Postgres",
+      "DrizzleORM",
+      "Bun",
+    ],
+  },
+  {
+    title: "oss.now (acquired)",
     description: "A place to share your open source projects and find new ones.",
     link: "https://oss.now",
     github: "https://github.com/collabute/ossdotnow",
@@ -259,8 +285,15 @@ const projects = [
 const experience = [
   {
     role: "Senior Frontend Engineer",
+    company: "CodeRabbit",
+    period: "Feb 2026 - Present",
+    description: "Senior frontend engineer uuhh building.. stuff..",
+    technologies: [],
+  },
+  {
+    role: "Senior Frontend Engineer",
     company: "Incard Ltd.",
-    period: "Nov 2025 - Present",
+    period: "Nov 2025 - Jan 2026",
     description: "Senior frontend engineer responsible for building the new version of the Incard website.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "SWR", "Vercel"],
   },
