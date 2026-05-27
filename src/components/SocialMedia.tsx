@@ -27,17 +27,17 @@ const Icon: React.FC<IconProps> = ({ name, ...props }) => {
 
 const SocialMedia: React.FC = () => {
   return (
-    <div className="flex flex-row gap-4">
+    <div className="flex flex-row items-center gap-5">
       {socialMedia.map((link) => (
         <CustomLink
           key={link.name}
           href={link.link}
           target="_blank"
-          className="overflow-hidden transition-all text-zinc-900/60 dark:text-zinc-100/60 hover:text-zinc-900/100 dark:hover:text-zinc-100/100"
+          className="text-body hover:text-paper transition-colors"
           track={`${link.name}_link_clicked`}
         >
           <p className="sr-only">{link.name}</p>
-          <Icon name={link.name} className="transition-all h-5 w-5" />
+          <Icon name={link.name} className="h-[18px] w-[18px]" />
         </CustomLink>
       ))}
     </div>

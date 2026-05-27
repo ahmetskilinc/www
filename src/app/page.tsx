@@ -1,197 +1,215 @@
 import SocialMedia from "@/components/SocialMedia";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import FooterWrapper from "@/components/FooterWrapper";
-// import Bun from "@/components/icons/Bun";
-// import DrizzleORM from "@/components/icons/Drizzle";
-// import Nextjs from "@/components/icons/Next";
-// import Nodejs from "@/components/icons/Nodejs";
-// import Postgres from "@/components/icons/Postgres";
-// import ReactIcon from "@/components/icons/React";
-// import TailwindCSS from "@/components/icons/Tailwind";
-// import Trpc from "@/components/icons/Trpc";
-// import TypeScript from "@/components/icons/Typescript";
-// import Vercel from "@/components/icons/Vercel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { track } from "@vercel/analytics";
-import { ExternalLink } from "lucide-react";
-import Link from "next/link";
 import CustomLink from "@/components/CustomLink";
+
+type Experience = {
+  role: string;
+  company?: string;
+  period: string;
+  description: string;
+  technologies: string[];
+  current?: boolean;
+};
+
+type Project = {
+  title: string;
+  description: string;
+  link?: string;
+  github?: string;
+  technologies: string[];
+};
+
+const tabTriggerClasses = cn(
+  "!bg-transparent !border-none !shadow-none !rounded-none !p-0 !h-auto",
+  "!font-medium !text-[15px] !leading-5 !tracking-[-0.005em]",
+  "!text-faint data-[state=active]:!text-paper",
+  "hover:!text-smoke data-[state=active]:hover:!text-paper",
+  "transition-colors duration-300 ease-out",
+);
+
+function splitPeriod(period: string) {
+  const [start, end] = period.split(" - ");
+  return { start: start ?? period, end: end ?? "" };
+}
+
+function TechCredits({ items }: { items: string[] }) {
+  if (items.length === 0) return null;
+  return (
+    <ul className="flex flex-wrap items-center pt-1">
+      {items.map((tech, i) => (
+        <li key={tech} className="flex items-center">
+          <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-faint">{tech}</span>
+          {i < items.length - 1 && <span className="font-mono text-[11px] text-very-faint px-2.5">·</span>}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function PeriodColumn({ start, end, current = false }: { start: string; end: string; current?: boolean }) {
+  return (
+    <div className="md:w-24 shrink-0 md:pt-1">
+      <div className="flex md:flex-col items-center md:items-start gap-x-2 md:gap-y-1.5 font-mono text-[11px] sm:text-xs uppercase tracking-[0.1em] leading-[18px]">
+        {current && (
+          <span aria-hidden className="inline-block md:hidden w-1.5 h-1.5 rounded-full bg-paper shrink-0" />
+        )}
+        <span className={cn(current ? "text-smoke" : "text-body")}>{start}</span>
+        <span className="text-faint">{end ? `→ ${end}` : ""}</span>
+      </div>
+    </div>
+  );
+}
+
+function ExperienceRow({ entry, isFirst }: { entry: Experience; isFirst: boolean }) {
+  const { start, end } = splitPeriod(entry.period);
+  const isFreelance = entry.role.toLowerCase().includes("freelance");
+  return (
+    <li className={cn("flex flex-col md:flex-row md:gap-6 py-7 sm:py-8", isFirst ? "border-t border-divider" : "border-t border-divider-weak")}>
+      <PeriodColumn start={start} end={end} current={entry.current} />
+      <div className="flex-1 flex flex-col gap-2.5 mt-2 md:mt-0">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          {entry.current && (
+            <span aria-hidden className="hidden md:inline-block w-[7px] h-[7px] rounded-full bg-paper shrink-0" />
+          )}
+          <h3 className="text-[16px] md:text-[18px] font-medium tracking-[-0.01em] text-paper leading-6">{entry.role}</h3>
+          {entry.company ? (
+            <>
+              <span aria-hidden className="text-faint leading-6 select-none">—</span>
+              <span className="font-display italic text-[18px] md:text-[20px] tracking-[-0.015em] text-paper leading-6">
+                {entry.company}
+              </span>
+            </>
+          ) : (
+            <span className="font-display italic text-[18px] md:text-[20px] tracking-[-0.015em] text-paper/70 leading-6">
+              {isFreelance ? "Independent" : ""}
+            </span>
+          )}
+        </div>
+        <p className="text-[14px] md:text-[15px] leading-6 text-body max-w-md">{entry.description}</p>
+        <TechCredits items={entry.technologies} />
+      </div>
+    </li>
+  );
+}
+
+function ProjectRow({ project, index, isFirst }: { project: Project; index: number; isFirst: boolean }) {
+  const indexLabel = `P‑${index.toString().padStart(2, "0")}`;
+  return (
+    <li
+      className={cn(
+        "flex flex-col md:flex-row md:gap-6 py-7 sm:py-8",
+        isFirst ? "border-t border-divider" : "border-t border-divider-weak",
+      )}
+    >
+      <div className="md:w-24 shrink-0 md:pt-1 mb-2 md:mb-0">
+        <span className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.1em] text-body leading-[18px]">{indexLabel}</span>
+      </div>
+      <div className="flex-1 flex flex-col gap-2.5">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+          <h3 className="text-[16px] md:text-[18px] font-medium tracking-[-0.01em] text-paper leading-6">{project.title}</h3>
+          <div className="flex items-center gap-3.5">
+            {project.link ? (
+              <CustomLink
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-[11px] uppercase tracking-[0.1em] text-smoke hover:text-paper transition-colors"
+                track={`${project.title}_clicked`}
+              >
+                View ↗
+              </CustomLink>
+            ) : null}
+            {project.github ? (
+              <CustomLink
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-[11px] uppercase tracking-[0.1em] text-smoke hover:text-paper transition-colors"
+                track={`${project.title}_github_clicked`}
+              >
+                GitHub ↗
+              </CustomLink>
+            ) : null}
+          </div>
+        </div>
+        <p className="text-[14px] md:text-[15px] leading-6 text-body max-w-md">{project.description}</p>
+        <TechCredits items={project.technologies} />
+      </div>
+    </li>
+  );
+}
 
 export default function Home() {
   return (
-    <main className="text-zinc-900 dark:text-zinc-100 max-w-xl mx-auto px-4 py-4 min-h-svh flex flex-col justify-between">
-      <div>
-        <section className="mb-6">
-          <h1 className="text-xl font-medium tracking-tight mb-4 flex items-baseline justify-between">
-            <span>Hey, I&apos;m Ahmet</span>
+    <main className="max-w-xl mx-auto px-6 sm:px-8 pt-10 sm:pt-14 pb-10 sm:pb-16 min-h-svh flex flex-col">
+      <div className="flex-1">
+        <header>
+          <div className="flex items-center justify-end pb-16 sm:pb-24">
             <ThemeToggle />
-          </h1>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mb-8">
-            Software Engineer from London. Currently working as a Senior Frontend Engineer at{" "}
-            <CustomLink
-              href="https://incard.co/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-zinc-900 dark:text-zinc-100 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-              track="incard_clicked"
-            >
-              Incard
-            </CustomLink>
-            .
-          </p>
+          </div>
 
-          <div className="flex items-center gap-5">
+          <h1 className="font-display text-[44px] sm:text-[60px] md:text-[72px] font-medium tracking-[-0.035em] leading-[0.92] text-paper">
+            Ahmet Kilinç
+          </h1>
+
+          <div className="mt-7 sm:mt-10 flex flex-col gap-2 max-w-md">
+            <p className="text-[16px] sm:text-[19px] leading-[1.55] tracking-[-0.005em] text-paper">
+              Senior frontend engineer based in London. Most recently working on developer tools, mail, and AI products.
+            </p>
+            <p className="text-[16px] sm:text-[19px] leading-[1.55] tracking-[-0.005em] text-body">
+              Currently shipping at{" "}
+              <CustomLink
+                href="https://coderabbit.ai/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-paper font-medium hover:underline underline-offset-4 decoration-paper/40"
+                track="coderabbit_clicked"
+              >
+                CodeRabbit
+              </CustomLink>
+              .
+            </p>
+          </div>
+
+          <div className="mt-8 sm:mt-10 pb-16 sm:pb-28">
             <SocialMedia />
           </div>
-        </section>
+        </header>
 
-        <Tabs defaultValue="experience">
-          <TabsList className="mb-4 border-none bg-transparent p-0 -ml-[8px]">
-            <TabsTrigger
-              value="experience"
-              className={cn(
-                "!bg-transparent !border-none !shadow-none",
-                "!font-light data-[state=active]:!font-bold transition-all duration-300 ease-out",
-                "!text-neutral-400 dark:!text-neutral-400",
-                "data-[state=active]:!text-neutral-800 dark:data-[state=active]:!text-neutral-100",
-              )}
-            >
+        <Tabs defaultValue="experience" className="gap-0">
+          <div className="border-t border-divider pt-7 sm:pt-9 pb-6 sm:pb-7">
+            <span className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.14em] text-smoke">
+              § 01 — Selected
+            </span>
+          </div>
+
+          <TabsList className="!h-auto !p-0 !bg-transparent !rounded-none !w-fit flex items-center gap-7 mb-10 sm:mb-12">
+            <TabsTrigger value="experience" className={tabTriggerClasses}>
               Experience
             </TabsTrigger>
-            <TabsTrigger
-              value="projects"
-              className={cn(
-                "!bg-transparent !border-none !shadow-none",
-                "!font-light data-[state=active]:!font-bold transition-all duration-300 ease-out",
-                "!text-neutral-400 dark:!text-neutral-400",
-                "data-[state=active]:!text-neutral-800 dark:data-[state=active]:!text-neutral-100",
-              )}
-            >
+            <TabsTrigger value="projects" className={tabTriggerClasses}>
               Projects
             </TabsTrigger>
-            {/* <TabsTrigger
-                value="tools"
-                className={cn(
-                  "!bg-transparent !border-none !shadow-none",
-                  "!font-light data-[state=active]:!font-bold transition-all duration-300 ease-out",
-                  "!text-neutral-400 dark:!text-neutral-400",
-                  "data-[state=active]:!text-neutral-800 dark:data-[state=active]:!text-neutral-100"
-                )}
-              >
-                Tools
-              </TabsTrigger> */}
           </TabsList>
 
-          <TabsContent value="experience">
-            <section className="mb-12">
-              <div className="space-y-8">
-                <ul className="space-y-8">
-                  {experience.map((job, index) => {
-                    const delay = 0.1 + index * 0.1;
-                    return (
-                      <li key={job.company} className="group hover:translate-x-1 transition-all duration-300 ease-out">
-                        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-1">
-                          <h3 className="text-md font-medium">
-                            {job.role} {job.role.toLowerCase().includes("freelance") ? "" : "at"} {job.company}
-                          </h3>
-                          <span className="text-xs text-zinc-400 dark:text-zinc-500">{job.period}</span>
-                        </div>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">{job.description}</p>
-                        <div className="flex flex-wrap gap-2">
-                          {job.technologies.map((tech, techIndex) => (
-                            <span key={techIndex} className="text-xs text-zinc-400 dark:text-zinc-500">
-                              {tech}
-                              {techIndex < job.technologies.length - 1 ? " /" : ""}
-                            </span>
-                          ))}
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </section>
+          <TabsContent value="experience" className="!mt-0">
+            <ul>
+              {experience.map((entry, i) => (
+                <ExperienceRow key={`${entry.role}-${entry.period}`} entry={entry} isFirst={i === 0} />
+              ))}
+            </ul>
           </TabsContent>
-          <TabsContent value="projects">
-            <section className="mb-12">
-              <div className="space-y-8">
-                <ul className="space-y-8">
-                  {projects.map((project, index) => {
-                    const delay = 0.1 + index * 0.1;
-                    return (
-                      <li key={project.title} className="group hover:translate-x-1 transition-all duration-300 ease-out">
-                        <div className="flex items-baseline justify-between mb-1">
-                          <h3 className="text-md font-medium">{project.title}</h3>
-                          <div className="flex flex-row gap-2">
-                            {project.github ? (
-                              <CustomLink
-                                href={project.github}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                                track={`${project.title}_github_clicked`}
-                              >
-                                GitHub <ExternalLink className="w-3 h-3" />
-                              </CustomLink>
-                            ) : null}
-                            {project.link ? (
-                              <CustomLink
-                                href={project.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                                track={`${project.title}_clicked`}
-                              >
-                                View <ExternalLink className="w-3 h-3" />
-                              </CustomLink>
-                            ) : null}
-                          </div>
-                        </div>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">{project.description}</p>
-                        <div className="flex flex-wrap gap-2">
-                          {project.technologies.map((tech, techIndex) => (
-                            <span key={techIndex} className="text-xs text-zinc-400 dark:text-zinc-500">
-                              {tech}
-                              {techIndex < project.technologies.length - 1 ? " /" : ""}
-                            </span>
-                          ))}
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </section>
+
+          <TabsContent value="projects" className="!mt-0">
+            <ul>
+              {projects.map((project, i) => (
+                <ProjectRow key={project.title} project={project} index={i + 1} isFirst={i === 0} />
+              ))}
+            </ul>
           </TabsContent>
-          {/* <TabsContent value="tools">
-              <h2 className="text-md font-medium mb-4">Frontend</h2>
-              <section className="mb-12">
-                <div className="flex flex-wrap gap-y-6 gap-x-4 justify-start">
-                  {tools.frontend.map(({ Logo, title }, index) => (
-                      <div className="flex flex-col items-center group">
-                        <div className="relative h-7 w-7 sm:h-8 sm:w-8 mb-3 transition-all duration-300 ease-out group-hover:scale-110 group-hover:-translate-y-1">
-                          <Logo className="h-full w-full" />
-                        </div>
-                        <span className="text-xs text-zinc-500 dark:text-zinc-400 text-center whitespace-nowrap">{title}</span>
-                      </div>
-                  ))}
-                </div>
-              </section>
-              <h2 className="text-md font-medium mb-4">Backend and Infrastructure</h2>
-              <section className="mb-12">
-                <div className="flex flex-wrap gap-y-6 gap-x-4 justify-start">
-                  {tools.backend_and_infrastructure.map(({ Logo, title }, index) => (
-                      <div className="flex flex-col items-center group">
-                        <div className="relative h-7 w-7 sm:h-8 sm:w-8 mb-3 transition-all duration-300 ease-out group-hover:scale-110 group-hover:-translate-y-1">
-                          <Logo className="h-full w-full" />
-                        </div>
-                        <span className="text-xs text-zinc-500 dark:text-zinc-400 text-center whitespace-nowrap">{title}</span>
-                      </div>
-                  ))}
-                </div>
-              </section>
-          </TabsContent> */}
         </Tabs>
       </div>
 
@@ -200,117 +218,36 @@ export default function Home() {
   );
 }
 
-const projects = [
-  {
-    title: "email renderer",
-    description: "A tool to test html and React Email emails in your browser.",
-    link: "https://email-renderer-web.vercel.app",
-    github: "https://github.com/ahmetskilinc/email-renderer",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn UI", "React Email", "Vercel", "Resend"],
-  },
-  {
-    title: "gitbruv",
-    description: "A Github alternative.",
-    link: "https://gitbruv.dev",
-    github: "https://gitbruv.dev/bruv/gitbruv",
-    technologies: [
-      "Tanstack Start",
-      "Tanstack Query",
-      "Expo",
-      "React Native",
-      "TypeScript",
-      "Rust",
-      "Tailwind CSS",
-      "Shadcn UI",
-      "Postgres",
-      "DrizzleORM",
-      "Bun",
-    ],
-  },
-  {
-    title: "oss.now (acquired)",
-    description: "A place to share your open source projects and find new ones.",
-    link: "https://oss.now",
-    github: "https://github.com/collabute/ossdotnow",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn UI", "Postgres", "DrizzleORM", "Bun", "tRPC", "Vercel"],
-  },
-  {
-    title: "UI Registry",
-    description: "A simple UI registry for components and blocks using the shadcn api.",
-    link: "https://ahmet.studio/ui",
-    github: "https://github.com/ahmetskilinc/ui",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn UI"],
-  },
-  {
-    title: "E-commerce Platform",
-    description: "A full-featured e-commerce platform with product management, cart functionality, and payment processing.",
-    link: "https://payload-ecommerce-app.vercel.app/",
-    github: "https://github.com/ahmetskilinc/payload-ecommerce",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Payload CMS", "Stripe"],
-  },
-  // {
-  //   title: "Portfolio Website",
-  //   description: "A minimalist portfolio website showcasing projects and skills with a clean, responsive design.",
-  //   link: "https://dub.sh/ahmet/",
-  //   github: "https://github.com/ahmetskilinc/portfolio-new-new-new-new",
-  //   technologies: ["Next.js", "TypeScript", "Tailwind CSS"],
-  // },
-  // {
-  //   title: "Work Hours Tracker - web",
-  //   description: "A collaborative task management web application with real-time updates and team functionality.",
-  //   link: "https://work-hours-tracker-chi.vercel.app/",
-  //   github: "https://github.com/ahmetskilinc/work-hours-web",
-  //   technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Web Sockets", "Supabase"],
-  // },
-  // {
-  //   title: "Work Hours Tracker - mobile",
-  //   description: "A collaborative task management mobile application with real-time updates and team functionality.",
-  //   github: "https://github.com/ahmetskilinc/work-hours-app",
-  //   technologies: ["Expo", "React Native", "TypeScript", "Web Sockets", "Supabase"],
-  // },
-  {
-    title: "Payload CMS Appointment Scheduling Plugin",
-    description: "A plugin for Payload CMS that allows users to schedule appointments.",
-    github: "https://github.com/ahmetskilinc/payload-appointments-plugin",
-    technologies: ["Next.js", "TypeScript", "Payload CMS"],
-  },
-  {
-    title: "Payload CMS Media Grid View Plugin",
-    description: "A plugin for Payload CMS that allows users to view media in a grid view.",
-    github: "https://github.com/ahmetskilinc/payload-media-grid-plugin",
-    technologies: ["Next.js", "TypeScript", "Payload CMS"],
-  },
-];
-
-const experience = [
+const experience: Experience[] = [
   {
     role: "Senior Frontend Engineer",
     company: "CodeRabbit",
     period: "Feb 2026 - Present",
-    description: "Senior frontend engineer uuhh building.. stuff..",
+    description: "Senior frontend engineer building the frontend across the product — UI, performance, and integrations.",
     technologies: [],
+    current: true,
   },
   {
     role: "Senior Frontend Engineer",
-    company: "Incard Ltd.",
+    company: "Incard",
     period: "Nov 2025 - Jan 2026",
     description: "Senior frontend engineer responsible for building the new version of the Incard website.",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "SWR", "Vercel"],
+    technologies: ["Next.js", "TypeScript", "Tailwind", "SWR", "Vercel"],
   },
   {
     role: "Software Engineer",
-    company: "Zero Email Inc. (US, remote)",
+    company: "Zero Email Inc.",
     period: "Feb 2025 - Oct 2025",
     description:
-      "Software engineer responsible for core features and performance optimisations for an innovative AI-powered email client, focusing on intelligent email processing and real-time collaboration.",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Postgres", "Google APIs"],
+      "Software engineer responsible for core features and performance optimisations for an AI-powered email client, focusing on intelligent email processing and real-time collaboration.",
+    technologies: ["Next.js", "TypeScript", "Tailwind", "Postgres", "Google APIs"],
   },
   {
     role: "Freelance Developer",
     period: "Mar 2024 - May 2025",
     description:
       "Delivering custom web solutions for diverse clients, specialising in e-commerce platforms, content management systems, and business automation tools.",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Postgres", "MongoDB", "PayloadCMS", "Google APIs"],
+    technologies: ["Next.js", "TypeScript", "Tailwind", "Postgres", "MongoDB", "PayloadCMS", "Google APIs"],
   },
   {
     role: "Front End Developer",
@@ -321,103 +258,59 @@ const experience = [
   },
   {
     role: "Full Stack Developer",
-    company: "XLN Telecom (Daisy Comms)",
+    company: "XLN · Daisy Comms",
     period: "Nov 2020 - Aug 2023",
     description: "Developed and maintained the company brochure site to guide and increase sales.",
     technologies: ["Vue.js", "Nuxt.js", "JavaScript", "SQL", "MongoDB", "C#", "ASP.NET", "WordPress"],
   },
-  // {
-  //   role: "Junior Web Developer",
-  //   company: "Absowebly",
-  //   period: "Jul 2018 - Sep 2018",
-  //   description: "Developing and maintaining client websites with a proprietary CMS.",
-  //   technologies: ["PHP", "HTML", "CSS", "JavaScript", "Sass"],
-  // },
 ];
 
-// const tools = {
-//   frontend: [
-//     {
-//       Logo: (props: React.SVGProps<SVGSVGElement>) => <ReactIcon {...props} />,
-//       title: "React",
-//     },
-//     {
-//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Nextjs {...props} />,
-//       title: "NextJS",
-//     },
-//     // {
-//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <ReactRouter {...props} />,
-//     //   title: "React Router",
-//     // },
-//     // {
-//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Vue {...props} />,
-//     //   title: "VueJS",
-//     // },
-//     // {
-//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Nuxt {...props} />,
-//     //   title: "NuxtJS",
-//     // },
-//     // {
-//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Html {...props} />,
-//     //   title: "HTML",
-//     // },
-//     // {
-//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Css {...props} />,
-//     //   title: "CSS",
-//     // },
-//     // {
-//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <JavaScript {...props} />,
-//     //   title: "Javascript",
-//     // },
-//     {
-//       Logo: (props: React.SVGProps<SVGSVGElement>) => <TypeScript {...props} />,
-//       title: "Typescript",
-//     },
-//     // {
-//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Sass {...props} />,
-//     //   title: "Sass",
-//     // },
-//     {
-//       Logo: (props: React.SVGProps<SVGSVGElement>) => <TailwindCSS {...props} />,
-//       title: "TailwindCSS",
-//     },
-//   ],
-//   backend_and_infrastructure: [
-//     {
-//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Trpc {...props} />,
-//       title: "TRPC",
-//     },
-//     // {
-//     //   Logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg",
-//     //   title: "Google Cloud",
-//     // },
-//     // {
-//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <AmazonWebServices {...props} />,
-//     //   title: "AWS",
-//     // },
-//     // {
-//     //   Logo: (props: React.SVGProps<SVGSVGElement>) => <Cloudflare {...props} />,
-//     //   title: "Cloudflare",
-//     // },
-//     {
-//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Vercel className="fill-black dark:fill-white" {...props} />,
-//       title: "Vercel",
-//     },
-//     {
-//       Logo: (props: React.SVGProps<SVGSVGElement>) => <DrizzleORM {...props} />,
-//       title: "DrizzleORM",
-//     },
-//     {
-//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Bun {...props} />,
-//       title: "Bun",
-//     },
-//     {
-//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Nodejs {...props} />,
-//       title: "NodeJS",
-//     },
-//     {
-//       Logo: (props: React.SVGProps<SVGSVGElement>) => <Postgres {...props} />,
-//       title: "PostgreSQL",
-//     },
-//   ],
-// };
+const projects: Project[] = [
+  {
+    title: "Email Renderer",
+    description: "A tool to test HTML and React Email emails in your browser.",
+    link: "https://email-renderer-web.vercel.app",
+    github: "https://github.com/ahmetskilinc/email-renderer",
+    technologies: ["Next.js", "TypeScript", "Tailwind", "Shadcn", "React Email", "Vercel", "Resend"],
+  },
+  {
+    title: "Gitbruv",
+    description: "A GitHub alternative — web and mobile, with a Rust core.",
+    link: "https://gitbruv.dev",
+    github: "https://gitbruv.dev/bruv/gitbruv",
+    technologies: ["Tanstack Start", "Tanstack Query", "Expo", "React Native", "TypeScript", "Rust", "Tailwind", "Postgres", "Drizzle", "Bun"],
+  },
+  {
+    title: "oss.now (acquired)",
+    description: "A place to share your open source projects and discover new ones.",
+    link: "https://oss.now",
+    github: "https://github.com/collabute/ossdotnow",
+    technologies: ["Next.js", "TypeScript", "Tailwind", "Shadcn", "Postgres", "Drizzle", "Bun", "tRPC", "Vercel"],
+  },
+  {
+    title: "UI Registry",
+    description: "A simple UI registry for components and blocks using the shadcn API.",
+    link: "https://ahmet.studio/ui",
+    github: "https://github.com/ahmetskilinc/ui",
+    technologies: ["Next.js", "TypeScript", "Tailwind", "Shadcn"],
+  },
+  {
+    title: "E‑commerce Platform",
+    description: "A full-featured e-commerce platform with product management, cart, and Stripe checkout.",
+    link: "https://payload-ecommerce-app.vercel.app/",
+    github: "https://github.com/ahmetskilinc/payload-ecommerce",
+    technologies: ["Next.js", "TypeScript", "Tailwind", "Payload CMS", "Stripe"],
+  },
+  {
+    title: "Payload Appointment Plugin",
+    description: "A Payload CMS plugin for scheduling appointments.",
+    github: "https://github.com/ahmetskilinc/payload-appointments-plugin",
+    technologies: ["Next.js", "TypeScript", "Payload"],
+  },
+  {
+    title: "Payload Media Grid Plugin",
+    description: "A Payload CMS plugin for viewing media in a grid layout.",
+    github: "https://github.com/ahmetskilinc/payload-media-grid-plugin",
+    technologies: ["Next.js", "TypeScript", "Payload"],
+  },
+];
