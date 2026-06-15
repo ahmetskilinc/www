@@ -30,13 +30,13 @@ export default function Home() {
           <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mb-8">
             Software Engineer from London. Currently working as a Senior Frontend Engineer at{" "}
             <CustomLink
-              href="https://incard.co/"
+              href="https://coderabbit.ai/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-900 dark:text-zinc-100 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-              track="incard_clicked"
+              track="coderabbit_ai_clicked"
             >
-              Incard
+              CodeRabbit AI
             </CustomLink>
             .
           </p>
@@ -285,7 +285,7 @@ const projects = [
 const experience = [
   {
     role: "Senior Frontend Engineer",
-    company: "CodeRabbit",
+    company: "CodeRabbit AI",
     period: "Feb 2026 - Present",
     description: "Senior frontend engineer uuhh building.. stuff..",
     technologies: [],
