@@ -6,8 +6,8 @@ import Instagram from "./icons/Instagram";
 import LinkedIn from "./icons/LinkedIn";
 import Calcom from "./icons/Calcom";
 import React, { SVGProps } from "react";
-import socialMedia from "@/utilities/socialMedia";
 import CustomLink from "./CustomLink";
+import type { Profile } from "@/payload-types";
 
 type IconProps = SVGProps<SVGSVGElement> & { name: string };
 
@@ -25,19 +25,23 @@ const Icon: React.FC<IconProps> = ({ name, ...props }) => {
   return icons[name];
 };
 
-const SocialMedia: React.FC = () => {
+type SocialMediaProps = {
+  socials: NonNullable<Profile["socials"]>;
+};
+
+const SocialMedia: React.FC<SocialMediaProps> = ({ socials }) => {
   return (
     <div className="flex flex-row gap-4">
-      {socialMedia.map((link) => (
+      {socials.map((social) => (
         <CustomLink
-          key={link.name}
-          href={link.link}
+          key={social.id ?? social.platform}
+          href={social.url}
           target="_blank"
           className="overflow-hidden transition-all text-zinc-900/60 dark:text-zinc-100/60 hover:text-zinc-900/100 dark:hover:text-zinc-100/100"
-          track={`${link.name}_link_clicked`}
+          track={`${social.platform}_link_clicked`}
         >
-          <p className="sr-only">{link.name}</p>
-          <Icon name={link.name} className="transition-all h-5 w-5" />
+          <p className="sr-only">{social.platform}</p>
+          <Icon name={social.platform} className="transition-all h-5 w-5" />
         </CustomLink>
       ))}
     </div>
