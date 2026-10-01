@@ -126,21 +126,21 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Sorted on the site by start date, newest first.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "experience".
  */
 export interface Experience {
   id: number;
-  _order?: string | null;
   role: string;
   /**
    * Leave empty for freelance/self-employed entries.
    */
   company?: string | null;
-  /**
-   * e.g. "Feb 2026 - Present"
-   */
-  period: string;
+  startDate: string;
+  current?: boolean | null;
+  endDate?: string | null;
   description: {
     root: {
       type: string;
@@ -329,10 +329,11 @@ export interface PayloadMigration {
  * via the `definition` "experience_select".
  */
 export interface ExperienceSelect<T extends boolean = true> {
-  _order?: T;
   role?: T;
   company?: T;
-  period?: T;
+  startDate?: T;
+  current?: T;
+  endDate?: T;
   description?: T;
   technologies?: T;
   updatedAt?: T;

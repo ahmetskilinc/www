@@ -6,7 +6,8 @@ export const Projects: CollectionConfig = {
   slug: "projects",
   orderable: true,
   versions: {
-    drafts: true,
+    // Autosave keeps the admin's live preview updating as you type.
+    drafts: { autosave: { interval: 800 } },
   },
   access: {
     read: publishedOrLoggedIn,

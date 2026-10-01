@@ -29,10 +29,15 @@ const link = (t: string, url: string) => ({
   children: [text(t)],
 });
 
+// Month dates are stored as noon UTC on the 1st, matching the experience_dates migration.
+const month = (yyyyMm: string) => `${yyyyMm}-01T12:00:00.000Z`;
+
 type SeedExperience = {
   role: string;
   company: string | null;
-  period: string;
+  startDate: string;
+  endDate?: string;
+  current?: boolean;
   description: string;
   technologies: string[];
   draft?: boolean;
@@ -51,21 +56,24 @@ const experience: SeedExperience[] = [
   {
     role: "Senior Frontend Engineer",
     company: "CodeRabbit AI",
-    period: "Feb 2026 - Present",
+    startDate: month("2026-02"),
+    current: true,
     description: "Senior frontend engineer uuhh building.. stuff..",
     technologies: [],
   },
   {
     role: "Senior Frontend Engineer",
     company: "Incard Ltd.",
-    period: "Nov 2025 - Jan 2026",
+    startDate: month("2025-11"),
+    endDate: month("2026-01"),
     description: "Senior frontend engineer responsible for building the new version of the Incard website.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "SWR", "Vercel"],
   },
   {
     role: "Software Engineer",
     company: "Zero Email Inc. (US, remote)",
-    period: "Feb 2025 - Oct 2025",
+    startDate: month("2025-02"),
+    endDate: month("2025-10"),
     description:
       "Software engineer responsible for core features and performance optimisations for an innovative AI-powered email client, focusing on intelligent email processing and real-time collaboration.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Postgres", "Google APIs"],
@@ -73,7 +81,8 @@ const experience: SeedExperience[] = [
   {
     role: "Freelance Developer",
     company: null,
-    period: "Mar 2024 - May 2025",
+    startDate: month("2024-03"),
+    endDate: month("2025-05"),
     description:
       "Delivering custom web solutions for diverse clients, specialising in e-commerce platforms, content management systems, and business automation tools.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Postgres", "MongoDB", "PayloadCMS", "Google APIs"],
@@ -81,21 +90,24 @@ const experience: SeedExperience[] = [
   {
     role: "Front End Developer",
     company: "Executives Place",
-    period: "Oct 2023 - Feb 2024",
+    startDate: month("2023-10"),
+    endDate: month("2024-02"),
     description: "Developed and maintained multiple features for the SaaS product, from performance improvements to new features.",
     technologies: ["Vue.js", "Node.js", "Laravel", "SQL"],
   },
   {
     role: "Full Stack Developer",
     company: "XLN Telecom (Daisy Comms)",
-    period: "Nov 2020 - Aug 2023",
+    startDate: month("2020-11"),
+    endDate: month("2023-08"),
     description: "Developed and maintained the company brochure site to guide and increase sales.",
     technologies: ["Vue.js", "Nuxt.js", "JavaScript", "SQL", "MongoDB", "C#", "ASP.NET", "WordPress"],
   },
   {
     role: "Junior Web Developer",
     company: "Absowebly",
-    period: "Jul 2018 - Sep 2018",
+    startDate: month("2018-07"),
+    endDate: month("2018-09"),
     description: "Developing and maintaining client websites with a proprietary CMS.",
     technologies: ["PHP", "HTML", "CSS", "JavaScript", "Sass"],
     draft: true,
@@ -208,6 +220,13 @@ const socials = [
 
 const seed = async () => {
   const payload = await getPayload({ config });
+
+  // Local admin login, only when credentials are provided (see .env.example).
+  const { SEED_ADMIN_EMAIL: email, SEED_ADMIN_PASSWORD: password } = process.env;
+  if (email && password && (await payload.count({ collection: "users" })).totalDocs === 0) {
+    await payload.create({ collection: "users", data: { email, password } });
+    payload.logger.info(`Created admin user ${email}.`);
+  }
 
   const existing = await payload.count({ collection: "experience" });
   if (existing.totalDocs > 0) {

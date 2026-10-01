@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:17
+    container_name: portfolio-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: portfolio
+    ports:
+      # 5434 so it doesn't clash with other local Postgres instances on 5432
+      - "5434:5432"
+    volumes:
+      - portfolio-db:/var/lib/postgresql/data
+
+volumes:
+  portfolio-db:

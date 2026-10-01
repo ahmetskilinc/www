@@ -2,18 +2,28 @@
 
 import { useTheme } from "@/components/ThemeProvider";
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const THEME_TRANSITION_MS = 400;
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const transitionTimeout = useRef<number>(undefined);
 
   const toggleTheme = () => {
+    // Enable colour transitions only for the duration of the switch.
+    const root = document.documentElement;
+    root.classList.add("theme-transition");
+    window.clearTimeout(transitionTimeout.current);
+    transitionTimeout.current = window.setTimeout(() => root.classList.remove("theme-transition"), THEME_TRANSITION_MS);
+
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
   useEffect(() => {
     setMounted(true);
+    return () => window.clearTimeout(transitionTimeout.current);
   }, []);
 
   if (!mounted) {

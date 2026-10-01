@@ -120,12 +120,15 @@
   body {
     @apply bg-background text-foreground;
   }
+}
 
-  html {
-    transition: color 350ms ease, background-color 350ms ease;
-  }
-
-  html * {
-    transition: color 350ms ease, background-color 350ms ease, border-color 350ms ease, opacity 350ms ease, transform 350ms ease;
+/* Smooth colour cross-fade, only while the theme toggle is switching (see ThemeToggle).
+   Unlayered so it wins over Tailwind's transition utilities for that moment. */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition: color 350ms ease, background-color 350ms ease, border-color 350ms ease, fill 350ms ease, stroke 350ms ease;
   }
 }

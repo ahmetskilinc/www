@@ -12,7 +12,7 @@ type ThemeProviderProps = {
 
 export function ThemeProvider({ children, defaultTheme = "system", storageKey = "theme" }: ThemeProviderProps) {
   return (
-    <NextThemesProvider attribute="class" defaultTheme={defaultTheme} storageKey={storageKey} enableSystem disableTransitionOnChange>
+    <NextThemesProvider attribute="class" defaultTheme={defaultTheme} storageKey={storageKey} enableSystem>
       {children}
     </NextThemesProvider>
   );
