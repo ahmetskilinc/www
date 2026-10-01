@@ -21,7 +21,7 @@ export const Projects: CollectionConfig = {
   },
   fields: [
     { name: "title", type: "text", required: true },
-    { name: "description", type: "textarea", required: true },
+    { name: "description", type: "richText", required: true },
     { name: "link", type: "text", admin: { position: "sidebar", description: "Live URL" } },
     { name: "github", type: "text", admin: { position: "sidebar", description: "GitHub / repo URL" } },
     { name: "technologies", type: "text", hasMany: true },

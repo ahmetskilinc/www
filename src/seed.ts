@@ -1,7 +1,7 @@
 import { getPayload } from "payload";
 import config from "@payload-config";
 
-const bio = (children: object[]) => ({
+const richText = (children: object[]) => ({
   root: {
     type: "root",
     format: "" as const,
@@ -215,18 +215,18 @@ const seed = async () => {
     process.exit(0);
   }
 
-  for (const { draft, ...job } of experience) {
+  for (const { draft, description, ...job } of experience) {
     await payload.create({
       collection: "experience",
-      data: { ...job, _status: draft ? "draft" : "published" },
+      data: { ...job, description: richText([text(description)]), _status: draft ? "draft" : "published" },
     });
   }
   payload.logger.info(`Seeded ${experience.length} experience entries.`);
 
-  for (const { draft, ...project } of projects) {
+  for (const { draft, description, ...project } of projects) {
     await payload.create({
       collection: "projects",
-      data: { ...project, _status: draft ? "draft" : "published" },
+      data: { ...project, description: richText([text(description)]), _status: draft ? "draft" : "published" },
     });
   }
   payload.logger.info(`Seeded ${projects.length} projects.`);
@@ -243,7 +243,7 @@ const seed = async () => {
     slug: "profile",
     data: {
       greeting: "Hey, I'm Ahmet",
-      bio: bio([
+      bio: richText([
         text("Software Engineer from London. Currently working as a Senior Frontend Engineer at "),
         link("CodeRabbit AI", "https://coderabbit.ai/"),
         text("."),

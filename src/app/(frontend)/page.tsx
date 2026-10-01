@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
 import CustomLink from "@/components/CustomLink";
+import Description from "@/components/Description";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { RichText } from "@payloadcms/richtext-lexical/react";
@@ -89,7 +90,7 @@ export default async function Home() {
                         </h3>
                         <span className="text-xs text-zinc-400 dark:text-zinc-500">{job.period}</span>
                       </div>
-                      <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">{job.description}</p>
+                      <Description data={job.description} className="mb-2" />
                       <div className="flex flex-wrap gap-2">
                         {(job.technologies ?? []).map((tech, techIndex) => (
                           <span key={techIndex} className="text-xs text-zinc-400 dark:text-zinc-500">
@@ -137,7 +138,7 @@ export default async function Home() {
                           ) : null}
                         </div>
                       </div>
-                      <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">{project.description}</p>
+                      <Description data={project.description} className="mb-2" />
                       <div className="flex flex-wrap gap-2">
                         {(project.technologies ?? []).map((tech, techIndex) => (
                           <span key={techIndex} className="text-xs text-zinc-400 dark:text-zinc-500">

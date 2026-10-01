@@ -34,7 +34,7 @@ export const Experience: CollectionConfig = {
       required: true,
       admin: { position: "sidebar", description: 'e.g. "Feb 2026 - Present"' },
     },
-    { name: "description", type: "textarea", required: true },
+    { name: "description", type: "richText", required: true },
     { name: "technologies", type: "text", hasMany: true },
   ],
 };
